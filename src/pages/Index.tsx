@@ -24,7 +24,7 @@ const MAX_LINK = 'https://max.ru/';
 
 type MediaItem =
   | { type: 'photo'; url: string }
-  | { type: 'video'; url: string };
+  | { type: 'video'; vkId: string };
 
 type Character = {
   name: string;
@@ -41,7 +41,7 @@ const characters: Character[] = [
     cover: `${BASE}fd1b8cd9-e31a-4c7a-bdb8-e9f36f1a62af.png`,
     color: '#60A5FA',
     media: [
-      { type: 'video', url: 'https://vk.com/wall793489540_16' },
+      { type: 'video', vkId: '793489540_456239038' },
       { type: 'photo', url: `${BASE}c070b6ea-c8d9-42a0-b4f2-6282467caff0.png` },
       { type: 'photo', url: `${BASE}09acb856-dcea-4963-9e24-723838dc3aba.jpg` },
       { type: 'photo', url: `${BASE}bd4d2eea-043a-4388-bd84-5633d9843acf.jpg` },
@@ -423,22 +423,13 @@ const Index = () => {
               <div className="relative bg-black aspect-[4/3] flex items-center justify-center overflow-hidden">
 
                 {currentMedia.type === 'video' ? (
-                  /* VK video — открываем в новой вкладке, показываем превью-заглушку */
-                  <a
-                    href={currentMedia.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex flex-col items-center justify-center gap-4 text-white w-full h-full"
-                    style={{ background: selectedChar.color + 'cc' }}
-                  >
-                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center hover:bg-white/40 transition-colors">
-                      <Icon name="Play" size={40} className="text-white ml-2" />
-                    </div>
-                    <span className="font-bold text-lg">Смотреть видео</span>
-                    <span className="text-sm opacity-70 flex items-center gap-1">
-                      <Icon name="ExternalLink" size={14} /> Откроется ВКонтакте
-                    </span>
-                  </a>
+                  <iframe
+                    src={`https://vk.com/video_ext.php?oid=${currentMedia.vkId.split('_')[0]}&id=${currentMedia.vkId.split('_')[1]}&hd=2&autoplay=1`}
+                    className="w-full h-full"
+                    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    frameBorder="0"
+                  />
                 ) : (
                   <img
                     src={currentMedia.url}
@@ -491,7 +482,7 @@ const Index = () => {
                       {m.type === 'video' ? (
                         <div
                           className="w-full h-full flex items-center justify-center"
-                          style={{ background: selectedChar.color + '55' }}
+                          style={{ background: selectedChar.color + '88' }}
                         >
                           <Icon name="Play" size={20} className="text-white" />
                         </div>
