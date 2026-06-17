@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import {
@@ -87,9 +87,9 @@ const characters: Character[] = [
   {
     name: 'Лабубу коричневый',
     emoji: '🤎',
-    cover: `${BASE}03a236c8-72eb-4578-84f2-eaf939461dfe.jpg`,
+    cover: `${BASE}02d767b7-344f-43b0-a529-6a627f053668.jpg`,
     color: '#B45309',
-    media: [{ type: 'photo', url: `${BASE}03a236c8-72eb-4578-84f2-eaf939461dfe.jpg` }],
+    media: [{ type: 'photo', url: `${BASE}02d767b7-344f-43b0-a529-6a627f053668.jpg` }],
   },
   {
     name: 'Зайка',
@@ -185,6 +185,156 @@ const Balloon = ({ color, className }: { color: string; className?: string }) =>
   </div>
 );
 
+/* ── Fullscreen media viewer ── */
+type ViewerProps = {
+  char: Character;
+  idx: number;
+  onClose: () => void;
+  onOrder: () => void;
+  onSetIdx: (i: number) => void;
+};
+
+const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps) => {
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const current = char.media[idx];
+
+  const prev = useCallback(() => {
+    onSetIdx((idx - 1 + char.media.length) % char.media.length);
+  }, [idx, char.media.length, onSetIdx]);
+
+  const next = useCallback(() => {
+    onSetIdx((idx + 1) % char.media.length);
+  }, [idx, char.media.length, onSetIdx]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      if (dx < 0) { next(); } else { prev(); }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] bg-black flex flex-col"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Top bar */}
+      <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-4 pt-4 pb-2"
+        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)' }}>
+        <button
+          onClick={onClose}
+          className="flex items-center gap-2 text-white font-bold text-sm bg-black/40 backdrop-blur rounded-full px-4 py-2 hover:bg-black/60 transition-colors"
+        >
+          <Icon name="ChevronLeft" size={20} />
+          Назад
+        </button>
+        <div
+          className="text-white font-display text-lg px-4 py-1.5 rounded-full"
+          style={{ background: char.color + 'cc' }}
+        >
+          {char.emoji} {char.name}
+        </div>
+        <span className="text-white/60 text-sm min-w-[48px] text-right">
+          {idx + 1} / {char.media.length}
+        </span>
+      </div>
+
+      {/* Main media area */}
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden select-none">
+        {current.type === 'video' ? (
+          <iframe
+            key={current.vkId}
+            src={`https://vk.com/video_ext.php?oid=${current.vkId.split('_')[0]}&id=${current.vkId.split('_')[1]}&hd=2&autoplay=1&no_audio_desc=1`}
+            className="w-full h-full"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allowFullScreen
+            frameBorder="0"
+            style={{ minHeight: '100%' }}
+          />
+        ) : (
+          <img
+            key={current.url}
+            src={current.url}
+            alt={char.name}
+            className="max-w-full max-h-full object-contain"
+            draggable={false}
+          />
+        )}
+
+        {/* Arrow buttons (hidden on video) */}
+        {char.media.length > 1 && current.type !== 'video' && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+            >
+              <Icon name="ChevronLeft" size={24} />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+            >
+              <Icon name="ChevronRight" size={24} />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Bottom bar: thumbnails + order button */}
+      <div
+        className="absolute bottom-0 inset-x-0 z-10 px-4 pb-5 pt-8"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)' }}
+      >
+        {/* Thumbnails */}
+        {char.media.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
+            {char.media.map((m, i) => (
+              <button
+                key={i}
+                onClick={() => onSetIdx(i)}
+                className={`shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex items-center justify-center ${
+                  i === idx ? 'border-white' : 'border-white/20'
+                }`}
+              >
+                {m.type === 'video' ? (
+                  <div
+                    className="w-full h-full flex items-center justify-center"
+                    style={{ background: char.color + '99' }}
+                  >
+                    <Icon name="Play" size={20} className="text-white" />
+                  </div>
+                ) : (
+                  <img src={m.url} alt="" className="w-full h-full object-cover" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+        {/* Order button */}
+        <Button
+          onClick={onOrder}
+          className="w-full rounded-full font-bold text-white shadow-lg py-5"
+          style={{ background: char.color }}
+        >
+          <Icon name="PartyPopper" className="mr-2" size={18} />
+          Заказать {char.name}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const Index = () => {
   const [contactOpen, setContactOpen] = useState(false);
   const [selectedChar, setSelectedChar] = useState<Character | null>(null);
@@ -195,21 +345,27 @@ const Index = () => {
     setMediaIdx(0);
   };
 
-  const prev = () => {
-    if (!selectedChar) return;
-    setMediaIdx((i) => (i - 1 + selectedChar.media.length) % selectedChar.media.length);
-  };
+  const closeChar = () => setSelectedChar(null);
 
-  const next = () => {
-    if (!selectedChar) return;
-    setMediaIdx((i) => (i + 1) % selectedChar.media.length);
+  const handleOrder = () => {
+    setSelectedChar(null);
+    setContactOpen(true);
   };
-
-  const currentMedia = selectedChar?.media[mediaIdx];
 
   return (
     <div className="relative min-h-screen font-sans text-[#2A1A3E] overflow-x-hidden bg-[#FFF8F0]">
       <Confetti />
+
+      {/* FULLSCREEN VIEWER */}
+      {selectedChar && (
+        <FullscreenViewer
+          char={selectedChar}
+          idx={mediaIdx}
+          onClose={closeChar}
+          onOrder={handleOrder}
+          onSetIdx={setMediaIdx}
+        />
+      )}
 
       {/* NAV */}
       <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-white/80 border-b border-festive-pink/10 shadow-sm">
@@ -300,13 +456,11 @@ const Index = () => {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 </div>
-                {/* hover overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-full p-3 shadow-xl">
                     <Icon name="Search" size={22} className="text-festive-pink" />
                   </div>
                 </div>
-                {/* Name tag — solid pill at bottom, always visible */}
                 <div className="absolute bottom-0 inset-x-0 flex items-end">
                   <div
                     className="w-full px-3 py-2.5 flex items-center gap-2"
@@ -413,109 +567,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-
-      {/* CHARACTER DETAIL DIALOG */}
-      <Dialog open={!!selectedChar} onOpenChange={(o) => !o && setSelectedChar(null)}>
-        <DialogContent className="rounded-3xl max-w-2xl p-0 overflow-hidden">
-          {selectedChar && currentMedia && (
-            <>
-              {/* Media viewer */}
-              <div className="relative bg-black aspect-[4/3] flex items-center justify-center overflow-hidden">
-
-                {currentMedia.type === 'video' ? (
-                  <iframe
-                    src={`https://vk.com/video_ext.php?oid=${currentMedia.vkId.split('_')[0]}&id=${currentMedia.vkId.split('_')[1]}&hd=2&autoplay=1`}
-                    className="w-full h-full"
-                    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    frameBorder="0"
-                  />
-                ) : (
-                  <img
-                    src={currentMedia.url}
-                    alt={selectedChar.name}
-                    className="w-full h-full object-contain"
-                  />
-                )}
-
-                {/* Prev / Next arrows */}
-                {selectedChar.media.length > 1 && (
-                  <>
-                    <button
-                      onClick={prev}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
-                    >
-                      <Icon name="ChevronLeft" size={22} />
-                    </button>
-                    <button
-                      onClick={next}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
-                    >
-                      <Icon name="ChevronRight" size={22} />
-                    </button>
-                  </>
-                )}
-
-                {/* Character name badge */}
-                <div
-                  className="absolute top-4 left-4 text-white font-display text-xl px-4 py-1.5 rounded-full z-10"
-                  style={{ background: selectedChar.color + 'dd' }}
-                >
-                  {selectedChar.emoji} {selectedChar.name}
-                </div>
-
-                {/* Counter */}
-                <span className="absolute bottom-3 right-4 text-white/70 text-xs z-10">
-                  {mediaIdx + 1} / {selectedChar.media.length}
-                </span>
-              </div>
-
-              {/* Thumbnails strip */}
-              {selectedChar.media.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto px-4 py-3 bg-gray-50">
-                  {selectedChar.media.map((m, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setMediaIdx(i)}
-                      className={`shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex items-center justify-center ${i === mediaIdx ? 'border-festive-pink' : 'border-transparent bg-gray-200'}`}
-                    >
-                      {m.type === 'video' ? (
-                        <div
-                          className="w-full h-full flex items-center justify-center"
-                          style={{ background: selectedChar.color + '88' }}
-                        >
-                          <Icon name="Play" size={20} className="text-white" />
-                        </div>
-                      ) : (
-                        <img src={m.url} alt="" className="w-full h-full object-cover" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <div className="p-5 flex flex-col gap-3">
-                <DialogHeader>
-                  <DialogTitle className="font-display text-2xl" style={{ color: selectedChar.color }}>
-                    {selectedChar.name}
-                  </DialogTitle>
-                  <DialogDescription>
-                    Хотите пригласить {selectedChar.name} на ваш праздник?
-                  </DialogDescription>
-                </DialogHeader>
-                <Button
-                  onClick={() => { setSelectedChar(null); setContactOpen(true); }}
-                  className="rounded-full font-bold text-white shadow-lg w-full py-5"
-                  style={{ background: selectedChar.color }}
-                >
-                  <Icon name="PartyPopper" className="mr-2" size={18} />
-                  Заказать {selectedChar.name}
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
 
       {/* CONTACT DIALOG */}
       <Dialog open={contactOpen} onOpenChange={setContactOpen}>
