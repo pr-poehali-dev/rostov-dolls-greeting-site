@@ -15,35 +15,99 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 
-const PHOTO_BEAR = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/8dfa94fa-9824-40ce-90b4-6fcc33de3b06.jpg';
-const PHOTO_BUNNY = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/88c48bc5-70ed-4bcf-89cb-b2b6a8950c39.jpg';
-const PHOTO_HERO = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/62de322c-4c6c-409b-a756-5da140525421.jpg';
-const PHOTO_WHITE = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/67fa8382-5abe-4242-9f12-3103ca634383.jpg';
-const PHOTO_PANDA = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/89b585fb-93fb-4900-b793-5c982f8657fb.jpg';
+const BASE = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/bucket/';
 
 const PHONE = '+7 988 064 5258';
 const PHONE_LINK = 'tel:+79880645258';
 const TG_LINK = 'https://t.me/';
 const MAX_LINK = 'https://max.ru/';
 
-const characters = [
-  { name: 'Белый Мишка', emoji: '🐻‍❄️', img: PHOTO_WHITE, color: '#60A5FA' },
-  { name: 'Чебурашка', emoji: '🐵', img: PHOTO_BEAR, color: '#FF8A3D' },
-  { name: 'Стич', emoji: '👽', img: PHOTO_HERO, color: '#2DD4BF' },
-  { name: 'Котик', emoji: '🐱', img: PHOTO_BUNNY, color: '#FF5E9E' },
-  { name: 'Лабубу розовый', emoji: '🩷', img: PHOTO_PANDA, color: '#F472B6' },
-  { name: 'Лабубу коричневый', emoji: '🤎', img: PHOTO_BEAR, color: '#B45309' },
-  { name: 'Зайка', emoji: '🐰', img: PHOTO_BUNNY, color: '#A78BFA' },
-  { name: 'Панда', emoji: '🐼', img: PHOTO_PANDA, color: '#374151' },
-  { name: 'Кинг-Конг', emoji: '🦍', img: PHOTO_HERO, color: '#78350F' },
-  { name: 'Коржик', emoji: '🐈', img: PHOTO_BUNNY, color: '#FF8A3D' },
-];
+type Character = {
+  name: string;
+  emoji: string;
+  cover: string;
+  color: string;
+  photos: string[];
+};
 
-const videos = [
-  { title: 'Мишка на дне рождения', emoji: '🐻', views: '12К', color: '#FF5E9E' },
-  { title: 'Зайка на выпускном', emoji: '🐰', views: '8.4К', color: '#2DD4BF' },
-  { title: 'Супергерой спешит', emoji: '🦸', views: '15К', color: '#8B5CF6' },
-  { title: 'Единорог на празднике', emoji: '🦄', views: '6.1К', color: '#FF8A3D' },
+const characters: Character[] = [
+  {
+    name: 'Белый Мишка',
+    emoji: '🐻‍❄️',
+    cover: `${BASE}fd1b8cd9-e31a-4c7a-bdb8-e9f36f1a62af.png`,
+    color: '#60A5FA',
+    photos: [`${BASE}fd1b8cd9-e31a-4c7a-bdb8-e9f36f1a62af.png`],
+  },
+  {
+    name: 'Чебурашка',
+    emoji: '🐵',
+    cover: `${BASE}b0f63f2b-6312-4be5-909d-b7d83214d47f.png`,
+    color: '#FF8A3D',
+    photos: [`${BASE}b0f63f2b-6312-4be5-909d-b7d83214d47f.png`],
+  },
+  {
+    name: 'Стич',
+    emoji: '💙',
+    cover: `${BASE}bcbe461b-a66f-4610-8b94-cd5b9ee3b00f.png`,
+    color: '#2DD4BF',
+    photos: [`${BASE}bcbe461b-a66f-4610-8b94-cd5b9ee3b00f.png`],
+  },
+  {
+    name: 'Котик',
+    emoji: '🐱',
+    cover: `${BASE}843c24e6-cb27-4532-a343-634cd99634ff.jpg`,
+    color: '#FF5E9E',
+    photos: [`${BASE}843c24e6-cb27-4532-a343-634cd99634ff.jpg`],
+  },
+  {
+    name: 'Лабубу розовый',
+    emoji: '🩷',
+    cover: `${BASE}03a236c8-72eb-4578-84f2-eaf939461dfe.jpg`,
+    color: '#F472B6',
+    photos: [`${BASE}03a236c8-72eb-4578-84f2-eaf939461dfe.jpg`],
+  },
+  {
+    name: 'Лабубу коричневый',
+    emoji: '🤎',
+    cover: `${BASE}03a236c8-72eb-4578-84f2-eaf939461dfe.jpg`,
+    color: '#B45309',
+    photos: [`${BASE}03a236c8-72eb-4578-84f2-eaf939461dfe.jpg`],
+  },
+  {
+    name: 'Зайка',
+    emoji: '🐰',
+    cover: `${BASE}7914b45c-8790-4cf2-9a32-ec3bd4c60918.png`,
+    color: '#A78BFA',
+    photos: [`${BASE}7914b45c-8790-4cf2-9a32-ec3bd4c60918.png`],
+  },
+  {
+    name: 'Панда',
+    emoji: '🐼',
+    cover: `${BASE}939701b6-86fc-4d80-aecb-d989ca0fb0cf.jpg`,
+    color: '#374151',
+    photos: [`${BASE}939701b6-86fc-4d80-aecb-d989ca0fb0cf.jpg`],
+  },
+  {
+    name: 'Кинг-Конг',
+    emoji: '🦍',
+    cover: `${BASE}7084847c-6e59-4f15-a7a1-c94b70a01786.png`,
+    color: '#78350F',
+    photos: [`${BASE}7084847c-6e59-4f15-a7a1-c94b70a01786.png`],
+  },
+  {
+    name: 'Коржик',
+    emoji: '🐈',
+    cover: `${BASE}009f14ac-d41f-4903-9127-c89530d3637a.jpg`,
+    color: '#FF8A3D',
+    photos: [`${BASE}009f14ac-d41f-4903-9127-c89530d3637a.jpg`],
+  },
+  {
+    name: 'Бурый Медведь',
+    emoji: '🐻',
+    cover: `${BASE}6ec4609a-cf50-4dc8-a50a-6cd558c3ca7c.jpg`,
+    color: '#92400E',
+    photos: [`${BASE}6ec4609a-cf50-4dc8-a50a-6cd558c3ca7c.jpg`],
+  },
 ];
 
 const included = [
@@ -63,12 +127,13 @@ const faq = [
   { q: 'Можно выбрать конкретного персонажа?', a: 'Конечно! У нас большой гардероб образов. Покажите пример — подберём максимально похожего героя.' },
 ];
 
+const ITEM_COLORS = ['#FF5E9E', '#8B5CF6', '#2DD4BF', '#FF8A3D', '#D4A800', '#FF5E9E'];
+
 const Confetti = () => {
   const colors = ['#FF5E9E', '#8B5CF6', '#FFD43B', '#2DD4BF', '#FF8A3D'];
-  const pieces = Array.from({ length: 40 });
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      {pieces.map((_, i) => (
+      {Array.from({ length: 40 }).map((_, i) => (
         <span
           key={i}
           className="absolute top-0 block animate-confetti-fall"
@@ -96,8 +161,24 @@ const Balloon = ({ color, className }: { color: string; className?: string }) =>
 );
 
 const Index = () => {
-  const [activeChar, setActiveChar] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
+  const [selectedChar, setSelectedChar] = useState<Character | null>(null);
+  const [galleryPhotoIdx, setGalleryPhotoIdx] = useState(0);
+
+  const openChar = (c: Character) => {
+    setSelectedChar(c);
+    setGalleryPhotoIdx(0);
+  };
+
+  const prevPhoto = () => {
+    if (!selectedChar) return;
+    setGalleryPhotoIdx((i) => (i - 1 + selectedChar.photos.length) % selectedChar.photos.length);
+  };
+
+  const nextPhoto = () => {
+    if (!selectedChar) return;
+    setGalleryPhotoIdx((i) => (i + 1) % selectedChar.photos.length);
+  };
 
   return (
     <div className="relative min-h-screen font-sans text-[#2A1A3E] overflow-x-hidden bg-[#FFF8F0]">
@@ -107,10 +188,9 @@ const Index = () => {
       <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-white/80 border-b border-festive-pink/10 shadow-sm">
         <nav className="container flex items-center justify-between py-4">
           <a href="#top" className="font-display text-xl md:text-2xl text-festive-pink leading-tight">
-            Мишка Умка<br className="hidden sm:block" /><span className="text-festive-purple"> и его друзья</span>
+            Мишка Умка<span className="text-festive-purple"> и его друзья</span>
           </a>
           <div className="hidden md:flex items-center gap-7 font-semibold text-sm">
-            <a href="#video" className="hover:text-festive-pink transition-colors">Видео</a>
             <a href="#gallery" className="hover:text-festive-pink transition-colors">Галерея</a>
             <a href="#included" className="hover:text-festive-pink transition-colors">Что входит</a>
             <a href="#faq" className="hover:text-festive-pink transition-colors">Вопросы</a>
@@ -179,19 +259,25 @@ const Index = () => {
             <p className="text-base md:text-lg text-[#5A4A6E] mt-2">Фото-видео ростовых кукол</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 md:gap-6">
-            {characters.map((c, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+            {characters.map((c) => (
               <div
                 key={c.name}
-                onMouseEnter={() => setActiveChar(i)}
-                className={`relative rounded-[1.5rem] overflow-hidden shadow-lg transition-all duration-300 ${activeChar === i ? 'scale-[1.03]' : ''}`}
+                onClick={() => openChar(c)}
+                className="relative rounded-[1.5rem] overflow-hidden shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.03] hover:shadow-2xl group"
               >
                 <div className="aspect-[4/5] overflow-hidden">
                   <img
-                    src={c.img}
+                    src={c.cover}
                     alt={c.name}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
+                </div>
+                {/* hover overlay */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-full p-3 shadow-xl">
+                    <Icon name="Search" size={22} className="text-festive-pink" />
+                  </div>
                 </div>
                 <div
                   className="absolute bottom-0 inset-x-0 p-4 text-white"
@@ -200,38 +286,6 @@ const Index = () => {
                   <h3 className="font-display text-xl md:text-2xl leading-tight flex items-center gap-1">
                     <span className="text-2xl">{c.emoji}</span> {c.name}
                   </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* VIDEO */}
-      <section id="video" className="relative z-10 py-20 bg-white/60">
-        <div className="container">
-          <div className="text-center mb-14">
-            <span className="font-hand text-2xl text-festive-teal">Живые эмоции</span>
-            <h2 className="font-display text-4xl md:text-5xl text-festive-purple">Видео-примеры поздравлений</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {videos.map((v) => (
-              <div
-                key={v.title}
-                className="group relative rounded-3xl overflow-hidden cursor-pointer aspect-[3/4] shadow-lg hover-scale"
-                style={{ background: `linear-gradient(160deg, ${v.color}, ${v.color}cc)` }}
-              >
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                  <span className="text-7xl mb-3 animate-wiggle">{v.emoji}</span>
-                  <div className="w-16 h-16 rounded-full bg-white/30 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon name="Play" size={28} className="text-white ml-1" />
-                  </div>
-                </div>
-                <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/50 to-transparent text-white">
-                  <p className="font-bold text-sm">{v.title}</p>
-                  <p className="text-xs opacity-80 flex items-center gap-1">
-                    <Icon name="Eye" size={12} /> {v.views} просмотров
-                  </p>
                 </div>
               </div>
             ))}
@@ -254,12 +308,12 @@ const Index = () => {
               >
                 <div
                   className="shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ background: ['#FF5E9E', '#8B5CF6', '#2DD4BF', '#FF8A3D', '#FFD43B', '#FF5E9E'][i] + '22' }}
+                  style={{ background: ITEM_COLORS[i % ITEM_COLORS.length] + '22' }}
                 >
                   <Icon
                     name={item.icon}
                     size={28}
-                    style={{ color: ['#FF5E9E', '#8B5CF6', '#2DD4BF', '#FF8A3D', '#D4A800', '#FF5E9E'][i] }}
+                    style={{ color: ITEM_COLORS[i % ITEM_COLORS.length] }}
                   />
                 </div>
                 <div className="text-left">
@@ -334,6 +388,92 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* CHARACTER DETAIL DIALOG */}
+      <Dialog open={!!selectedChar} onOpenChange={(o) => !o && setSelectedChar(null)}>
+        <DialogContent className="rounded-3xl max-w-2xl p-0 overflow-hidden">
+          {selectedChar && (
+            <>
+              {/* Photo viewer */}
+              <div className="relative bg-black aspect-[4/3] flex items-center justify-center overflow-hidden">
+                <img
+                  src={selectedChar.photos[galleryPhotoIdx]}
+                  alt={selectedChar.name}
+                  className="w-full h-full object-contain"
+                />
+                {selectedChar.photos.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevPhoto}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                    >
+                      <Icon name="ChevronLeft" size={22} />
+                    </button>
+                    <button
+                      onClick={nextPhoto}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+                    >
+                      <Icon name="ChevronRight" size={22} />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                      {selectedChar.photos.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setGalleryPhotoIdx(i)}
+                          className={`w-2 h-2 rounded-full transition-colors ${i === galleryPhotoIdx ? 'bg-white' : 'bg-white/40'}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+                <div
+                  className="absolute top-4 left-4 text-white font-display text-2xl px-4 py-1.5 rounded-full"
+                  style={{ background: selectedChar.color + 'cc' }}
+                >
+                  {selectedChar.emoji} {selectedChar.name}
+                </div>
+                <span className="absolute bottom-3 right-4 text-white/60 text-xs">
+                  {galleryPhotoIdx + 1} / {selectedChar.photos.length}
+                </span>
+              </div>
+
+              {/* Thumbnails strip (if >1 photo) */}
+              {selectedChar.photos.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto px-5 py-3 bg-gray-50">
+                  {selectedChar.photos.map((p, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setGalleryPhotoIdx(i)}
+                      className={`shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${i === galleryPhotoIdx ? 'border-festive-pink' : 'border-transparent'}`}
+                    >
+                      <img src={p} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="p-6 flex flex-col gap-4">
+                <DialogHeader>
+                  <DialogTitle className="font-display text-2xl" style={{ color: selectedChar.color }}>
+                    {selectedChar.name}
+                  </DialogTitle>
+                  <DialogDescription>
+                    Хотите пригласить {selectedChar.name} на ваш праздник?
+                  </DialogDescription>
+                </DialogHeader>
+                <Button
+                  onClick={() => { setSelectedChar(null); setContactOpen(true); }}
+                  className="rounded-full font-bold text-white shadow-lg w-full py-5"
+                  style={{ background: selectedChar.color }}
+                >
+                  <Icon name="PartyPopper" className="mr-2" size={18} />
+                  Заказать {selectedChar.name}
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* CONTACT DIALOG */}
       <Dialog open={contactOpen} onOpenChange={setContactOpen}>
