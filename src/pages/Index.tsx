@@ -264,25 +264,16 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
         {current.type === 'video' ? (
           playing ? (
             current.url ? (
-              <div className="relative w-full h-full flex flex-col">
-                <video
-                  key={current.url}
-                  src={current.url}
-                  className="w-full flex-1 object-contain"
-                  autoPlay
-                  controls
-                  playsInline
-                  controlsList="nodownload"
-                  style={{ maxHeight: '100%' }}
-                />
-                <button
-                  onClick={() => setPlaying(false)}
-                  className="absolute top-4 left-4 flex items-center gap-2 text-white font-bold text-sm bg-black/50 backdrop-blur rounded-full px-4 py-2 hover:bg-black/70 transition-colors z-20"
-                >
-                  <Icon name="ChevronLeft" size={20} />
-                  Назад
-                </button>
-              </div>
+              <video
+                key={current.url}
+                src={current.url}
+                className="w-full h-full object-contain"
+                autoPlay
+                controls
+                playsInline
+                controlsList="nodownload"
+                style={{ maxHeight: 'calc(100vh - 160px)' }}
+              />
             ) : (
               <iframe
                 key={current.vkId + '_play'}
@@ -295,21 +286,24 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
               />
             )
           ) : (
-            <div
-              className="w-full h-full flex flex-col items-center justify-center gap-6 cursor-pointer"
-              style={{ background: `linear-gradient(135deg, ${char.color}44, ${char.color}22)` }}
-              onClick={() => setPlaying(true)}
-            >
-              <div className="text-8xl animate-wiggle">{char.emoji}</div>
-              <button
-                className="flex items-center gap-3 text-white font-bold text-xl px-8 py-4 rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95"
-                style={{ background: char.color }}
-                onClick={(e) => { e.stopPropagation(); setPlaying(true); }}
-              >
-                <Icon name="Play" size={28} className="ml-1" />
-                Смотреть
-              </button>
-              <p className="text-white/60 text-sm">Видео с {char.name}</p>
+            /* Обложка видео — фото персонажа + кнопка Смотреть */
+            <div className="relative w-full h-full cursor-pointer" onClick={() => setPlaying(true)}>
+              <img
+                src={char.cover}
+                alt={char.name}
+                className="w-full h-full object-cover"
+                draggable={false}
+              />
+              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-4">
+                <button
+                  className="flex items-center gap-3 text-white font-bold text-xl px-8 py-4 rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95"
+                  style={{ background: char.color }}
+                  onClick={(e) => { e.stopPropagation(); setPlaying(true); }}
+                >
+                  <Icon name="Play" size={30} className="ml-1" />
+                  Смотреть
+                </button>
+              </div>
             </div>
           )
         ) : (
@@ -322,18 +316,18 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
           />
         )}
 
-        {/* Arrow buttons (hidden on video) */}
-        {char.media.length > 1 && current.type !== 'video' && (
+        {/* Стрелки — всегда видны, кроме активного mp4 */}
+        {char.media.length > 1 && !(playing && current.type === 'video' && current.url) && (
           <>
             <button
               onClick={prev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
             >
               <Icon name="ChevronLeft" size={24} />
             </button>
             <button
               onClick={next}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors z-10"
             >
               <Icon name="ChevronRight" size={24} />
             </button>
@@ -341,7 +335,7 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
         )}
       </div>
 
-      {/* Bottom bar: thumbnails + order button — скрываем когда играет mp4 */}
+      {/* Bottom bar: thumbnails + order button */}
       <div
         className="absolute bottom-0 inset-x-0 z-10 px-4 pb-5 pt-8 transition-opacity duration-300"
         style={{
