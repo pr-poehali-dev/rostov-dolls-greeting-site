@@ -7,26 +7,36 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+
+const PHOTO_BEAR = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/8dfa94fa-9824-40ce-90b4-6fcc33de3b06.jpg';
+const PHOTO_BUNNY = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/88c48bc5-70ed-4bcf-89cb-b2b6a8950c39.jpg';
+const PHOTO_HERO = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/62de322c-4c6c-409b-a756-5da140525421.jpg';
+const PHOTO_WHITE = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/67fa8382-5abe-4242-9f12-3103ca634383.jpg';
+const PHOTO_PANDA = 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/89b585fb-93fb-4900-b793-5c982f8657fb.jpg';
+
+const PHONE = '+7 988 064 5258';
+const PHONE_LINK = 'tel:+79880645258';
+const TG_LINK = 'https://t.me/';
+const MAX_LINK = 'https://max.ru/';
 
 const characters = [
-  {
-    name: 'Мишка Тёдди',
-    desc: 'Тёплый и нежный — для самых маленьких',
-    img: 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/8dfa94fa-9824-40ce-90b4-6fcc33de3b06.jpg',
-    color: '#FF5E9E',
-  },
-  {
-    name: 'Зайка Лапочка',
-    desc: 'Шустрый и весёлый — обожает танцы',
-    img: 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/88c48bc5-70ed-4bcf-89cb-b2b6a8950c39.jpg',
-    color: '#2DD4BF',
-  },
-  {
-    name: 'Супергерой',
-    desc: 'Энергия и драйв — для смелых сорванцов',
-    img: 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/files/62de322c-4c6c-409b-a756-5da140525421.jpg',
-    color: '#8B5CF6',
-  },
+  { name: 'Белый Мишка', emoji: '🐻‍❄️', img: PHOTO_WHITE, color: '#60A5FA' },
+  { name: 'Чебурашка', emoji: '🐵', img: PHOTO_BEAR, color: '#FF8A3D' },
+  { name: 'Стич', emoji: '👽', img: PHOTO_HERO, color: '#2DD4BF' },
+  { name: 'Котик', emoji: '🐱', img: PHOTO_BUNNY, color: '#FF5E9E' },
+  { name: 'Лабубу розовый', emoji: '🩷', img: PHOTO_PANDA, color: '#F472B6' },
+  { name: 'Лабубу коричневый', emoji: '🤎', img: PHOTO_BEAR, color: '#B45309' },
+  { name: 'Зайка', emoji: '🐰', img: PHOTO_BUNNY, color: '#A78BFA' },
+  { name: 'Панда', emoji: '🐼', img: PHOTO_PANDA, color: '#374151' },
+  { name: 'Кинг-Конг', emoji: '🦍', img: PHOTO_HERO, color: '#78350F' },
+  { name: 'Коржик', emoji: '🐈', img: PHOTO_BUNNY, color: '#FF8A3D' },
 ];
 
 const videos = [
@@ -87,16 +97,17 @@ const Balloon = ({ color, className }: { color: string; className?: string }) =>
 
 const Index = () => {
   const [activeChar, setActiveChar] = useState(0);
+  const [contactOpen, setContactOpen] = useState(false);
 
   return (
     <div className="relative min-h-screen font-sans text-[#2A1A3E] overflow-x-hidden bg-[#FFF8F0]">
       <Confetti />
 
       {/* NAV */}
-      <header className="relative z-20 sticky top-0 backdrop-blur-md bg-white/70 border-b border-festive-pink/10">
+      <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-white/80 border-b border-festive-pink/10 shadow-sm">
         <nav className="container flex items-center justify-between py-4">
-          <a href="#top" className="font-display text-2xl md:text-3xl text-festive-pink">
-            ПраздникВкуклах
+          <a href="#top" className="font-display text-xl md:text-2xl text-festive-pink leading-tight">
+            Мишка Умка<br className="hidden sm:block" /><span className="text-festive-purple"> и его друзья</span>
           </a>
           <div className="hidden md:flex items-center gap-7 font-semibold text-sm">
             <a href="#video" className="hover:text-festive-pink transition-colors">Видео</a>
@@ -104,53 +115,92 @@ const Index = () => {
             <a href="#included" className="hover:text-festive-pink transition-colors">Что входит</a>
             <a href="#faq" className="hover:text-festive-pink transition-colors">Вопросы</a>
           </div>
-          <Button className="rounded-full bg-festive-pink hover:bg-festive-purple text-white font-bold shadow-lg shadow-festive-pink/30">
+          <Button
+            onClick={() => setContactOpen(true)}
+            className="rounded-full bg-festive-pink hover:bg-festive-purple text-white font-bold shadow-lg shadow-festive-pink/30"
+          >
             Заказать
           </Button>
         </nav>
       </header>
 
       {/* HERO */}
-      <section id="top" className="relative z-10 container pt-16 pb-24 md:pt-24 md:pb-32">
-        <Balloon color="#FFD43B" className="left-4 top-10 hidden md:block" />
-        <Balloon color="#2DD4BF" className="right-8 top-24 hidden md:block [animation-delay:1s]" />
-        <Balloon color="#8B5CF6" className="right-1/3 top-4 hidden lg:block [animation-delay:2s]" />
+      <section id="top" className="relative z-10 container pt-32 pb-24 md:pt-40 md:pb-32">
+        <Balloon color="#FFD43B" className="left-4 top-28 hidden md:block" />
+        <Balloon color="#2DD4BF" className="right-8 top-40 hidden md:block [animation-delay:1s]" />
+        <Balloon color="#8B5CF6" className="right-1/3 top-24 hidden lg:block [animation-delay:2s]" />
 
         <div className="max-w-3xl mx-auto text-center animate-fade-in">
           <span className="inline-block font-hand text-2xl text-festive-purple rotate-[-3deg] mb-4">
-            Самый яркий момент праздника ✨
+            Подарите эмоции ✨
           </span>
-          <h1 className="font-display text-5xl md:text-7xl leading-tight mb-6">
+          <h1 className="font-display text-5xl md:text-7xl leading-tight mb-8">
             <span className="text-festive-pink">Ростовые куклы</span>
             <br />
             на ваше поздравление
           </h1>
-          <p className="text-lg md:text-xl text-[#5A4A6E] mb-10 max-w-xl mx-auto">
-            Любимые персонажи оживают, чтобы подарить море улыбок, танцев и
-            незабываемых эмоций на дне рождения, выпускном или корпоративе.
-          </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="rounded-full text-base px-8 py-6 bg-festive-pink hover:bg-festive-purple text-white font-bold shadow-xl shadow-festive-pink/30 hover-scale">
+            <Button
+              onClick={() => setContactOpen(true)}
+              size="lg"
+              className="rounded-full text-base px-8 py-6 bg-festive-pink hover:bg-festive-purple text-white font-bold shadow-xl shadow-festive-pink/30 hover-scale"
+            >
               <Icon name="PartyPopper" className="mr-2" size={20} />
               Заказать праздник
             </Button>
             <Button size="lg" variant="outline" className="rounded-full text-base px-8 py-6 border-2 border-festive-purple text-festive-purple hover:bg-festive-purple hover:text-white font-bold" asChild>
-              <a href="#video">
-                <Icon name="Play" className="mr-2" size={20} />
-                Смотреть видео
+              <a href="#gallery">
+                <Icon name="Users" className="mr-2" size={20} />
+                Наши персонажи
               </a>
             </Button>
           </div>
 
           <div className="flex flex-wrap justify-center gap-8 mt-14 text-center">
             {[
-              { n: '500+', t: 'счастливых праздников' },
-              { n: '30+', t: 'ярких персонажей' },
+              { n: '2000+', t: 'счастливых праздников' },
+              { n: '5 лет', t: 'опыта работы' },
               { n: '5★', t: 'средняя оценка' },
             ].map((s) => (
               <div key={s.t} className="animate-scale-in">
                 <div className="font-display text-4xl text-festive-purple">{s.n}</div>
                 <div className="text-sm text-[#5A4A6E]">{s.t}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section id="gallery" className="relative z-10 py-20">
+        <div className="container">
+          <div className="text-center mb-14">
+            <h2 className="font-display text-4xl md:text-5xl text-festive-pink">Галерея персонажей</h2>
+            <p className="text-base md:text-lg text-[#5A4A6E] mt-2">Фото-видео ростовых кукол</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 md:gap-6">
+            {characters.map((c, i) => (
+              <div
+                key={c.name}
+                onMouseEnter={() => setActiveChar(i)}
+                className={`relative rounded-[1.5rem] overflow-hidden shadow-lg transition-all duration-300 ${activeChar === i ? 'scale-[1.03]' : ''}`}
+              >
+                <div className="aspect-[4/5] overflow-hidden">
+                  <img
+                    src={c.img}
+                    alt={c.name}
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  />
+                </div>
+                <div
+                  className="absolute bottom-0 inset-x-0 p-4 text-white"
+                  style={{ background: `linear-gradient(to top, ${c.color}ee, transparent)` }}
+                >
+                  <h3 className="font-display text-xl md:text-2xl leading-tight flex items-center gap-1">
+                    <span className="text-2xl">{c.emoji}</span> {c.name}
+                  </h3>
+                </div>
               </div>
             ))}
           </div>
@@ -189,68 +239,21 @@ const Index = () => {
         </div>
       </section>
 
-      {/* GALLERY */}
-      <section id="gallery" className="relative z-10 py-20">
-        <div className="container">
-          <div className="text-center mb-14">
-            <span className="font-hand text-2xl text-festive-orange">Образы и костюмы</span>
-            <h2 className="font-display text-4xl md:text-5xl text-festive-pink">Галерея персонажей</h2>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {characters.map((c, i) => (
-              <div
-                key={c.name}
-                onMouseEnter={() => setActiveChar(i)}
-                className={`relative rounded-[2rem] overflow-hidden shadow-xl transition-all duration-300 ${activeChar === i ? 'scale-[1.02]' : ''}`}
-              >
-                <div className="aspect-[4/5] overflow-hidden">
-                  <img
-                    src={c.img}
-                    alt={c.name}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                </div>
-                <div
-                  className="absolute bottom-0 inset-x-0 p-6 text-white"
-                  style={{ background: `linear-gradient(to top, ${c.color}ee, transparent)` }}
-                >
-                  <h3 className="font-display text-3xl mb-1">{c.name}</h3>
-                  <p className="text-sm font-medium opacity-95">{c.desc}</p>
-                </div>
-                <span
-                  className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg"
-                  style={{ background: c.color }}
-                >
-                  {i + 1}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button size="lg" className="rounded-full px-8 bg-festive-teal hover:bg-festive-purple text-white font-bold shadow-lg">
-              Посмотреть все образы
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* INCLUDED */}
       <section id="included" className="relative z-10 py-20 bg-white/60">
         <div className="container">
           <div className="text-center mb-14">
-            <span className="font-hand text-2xl text-festive-purple">Всё включено</span>
-            <h2 className="font-display text-4xl md:text-5xl text-festive-teal">Что входит в поздравление</h2>
+            <span className="font-hand text-2xl text-festive-orange">Всё включено</span>
+            <h2 className="font-display text-4xl md:text-5xl text-festive-orange">Что входит в поздравление</h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="max-w-xl mx-auto flex flex-col gap-4">
             {included.map((item, i) => (
               <div
                 key={item.title}
-                className="rounded-3xl bg-white p-7 shadow-md hover:shadow-xl transition-shadow border border-festive-pink/5"
+                className="flex items-center gap-5 rounded-3xl bg-white p-5 md:p-6 shadow-md hover:shadow-xl transition-shadow border border-festive-pink/5"
               >
                 <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+                  className="shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
                   style={{ background: ['#FF5E9E', '#8B5CF6', '#2DD4BF', '#FF8A3D', '#FFD43B', '#FF5E9E'][i] + '22' }}
                 >
                   <Icon
@@ -259,8 +262,10 @@ const Index = () => {
                     style={{ color: ['#FF5E9E', '#8B5CF6', '#2DD4BF', '#FF8A3D', '#D4A800', '#FF5E9E'][i] }}
                   />
                 </div>
-                <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                <p className="text-[#5A4A6E] text-sm">{item.text}</p>
+                <div className="text-left">
+                  <h3 className="font-bold text-lg mb-1">{item.title}</h3>
+                  <p className="text-[#5A4A6E] text-sm">{item.text}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -299,7 +304,11 @@ const Index = () => {
             <p className="text-lg opacity-95 mb-8 max-w-xl mx-auto">
               Оставьте заявку — и любимый персонаж уже спешит к вам на праздник 🎉
             </p>
-            <Button size="lg" className="rounded-full px-10 py-6 text-base bg-white text-festive-pink hover:bg-festive-yellow font-bold shadow-xl hover-scale">
+            <Button
+              onClick={() => setContactOpen(true)}
+              size="lg"
+              className="rounded-full px-10 py-6 text-base bg-white text-festive-pink hover:bg-festive-yellow font-bold shadow-xl hover-scale"
+            >
               <Icon name="Phone" className="mr-2" size={20} />
               Заказать поздравление
             </Button>
@@ -310,21 +319,78 @@ const Index = () => {
       {/* FOOTER */}
       <footer className="relative z-10 border-t border-festive-pink/10 bg-white/70 py-10">
         <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-display text-2xl text-festive-pink">ПраздникВкуклах</span>
+          <span className="font-display text-2xl text-festive-pink">Мишка Умка и его друзья</span>
           <p className="text-sm text-[#5A4A6E]">© 2026 · Ростовые куклы на поздравление</p>
           <div className="flex gap-3">
-            {['Instagram', 'Send', 'Phone'].map((ic) => (
-              <a
-                key={ic}
-                href="#"
-                className="w-10 h-10 rounded-full bg-festive-pink/10 flex items-center justify-center text-festive-pink hover:bg-festive-pink hover:text-white transition-colors"
-              >
-                <Icon name={ic} size={18} />
-              </a>
-            ))}
+            <a href={PHONE_LINK} className="w-10 h-10 rounded-full bg-festive-pink/10 flex items-center justify-center text-festive-pink hover:bg-festive-pink hover:text-white transition-colors">
+              <Icon name="Phone" size={18} />
+            </a>
+            <a href={TG_LINK} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-festive-pink/10 flex items-center justify-center text-festive-pink hover:bg-festive-pink hover:text-white transition-colors">
+              <Icon name="Send" size={18} />
+            </a>
+            <a href={MAX_LINK} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-festive-pink/10 flex items-center justify-center text-festive-pink hover:bg-festive-pink hover:text-white transition-colors">
+              <Icon name="MessageCircle" size={18} />
+            </a>
           </div>
         </div>
       </footer>
+
+      {/* CONTACT DIALOG */}
+      <Dialog open={contactOpen} onOpenChange={setContactOpen}>
+        <DialogContent className="rounded-3xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display text-3xl text-festive-pink text-center">Свяжитесь с нами!</DialogTitle>
+            <DialogDescription className="text-center text-base">
+              Позвоните или напишите — подберём персонажа и обсудим праздник 🎉
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col gap-3 mt-2">
+            <a
+              href={PHONE_LINK}
+              className="flex items-center gap-4 rounded-2xl bg-festive-pink/10 p-4 hover:bg-festive-pink hover:text-white transition-colors group"
+            >
+              <div className="w-12 h-12 rounded-full bg-festive-pink text-white flex items-center justify-center shrink-0">
+                <Icon name="Phone" size={22} />
+              </div>
+              <div className="text-left">
+                <div className="text-xs text-[#5A4A6E] group-hover:text-white/80">Позвонить</div>
+                <div className="font-bold text-lg">{PHONE}</div>
+              </div>
+            </a>
+
+            <a
+              href={TG_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-4 rounded-2xl bg-festive-teal/10 p-4 hover:bg-festive-teal hover:text-white transition-colors group"
+            >
+              <div className="w-12 h-12 rounded-full bg-festive-teal text-white flex items-center justify-center shrink-0">
+                <Icon name="Send" size={22} />
+              </div>
+              <div className="text-left">
+                <div className="text-xs text-[#5A4A6E] group-hover:text-white/80">Написать в</div>
+                <div className="font-bold text-lg">Telegram</div>
+              </div>
+            </a>
+
+            <a
+              href={MAX_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-4 rounded-2xl bg-festive-purple/10 p-4 hover:bg-festive-purple hover:text-white transition-colors group"
+            >
+              <div className="w-12 h-12 rounded-full bg-festive-purple text-white flex items-center justify-center shrink-0">
+                <Icon name="MessageCircle" size={22} />
+              </div>
+              <div className="text-left">
+                <div className="text-xs text-[#5A4A6E] group-hover:text-white/80">Написать в</div>
+                <div className="font-bold text-lg">Max</div>
+              </div>
+            </a>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
