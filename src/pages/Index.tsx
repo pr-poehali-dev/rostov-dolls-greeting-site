@@ -24,7 +24,7 @@ const MAX_LINK = 'https://max.ru/';
 
 type MediaItem =
   | { type: 'photo'; url: string }
-  | { type: 'video'; vkId: string };
+  | { type: 'video'; vkId?: string; url?: string };
 
 type Character = {
   name: string;
@@ -41,7 +41,7 @@ const characters: Character[] = [
     cover: `${BASE}fd1b8cd9-e31a-4c7a-bdb8-e9f36f1a62af.png`,
     color: '#60A5FA',
     media: [
-      { type: 'video', vkId: '793489540_456239038' },
+      { type: 'video', url: 'https://cdn.poehali.dev/projects/93d181b7-df59-41a1-98e3-9325c33024ba/bucket/323545f0-47e5-41c4-a7eb-a8b5859bf036.mp4' },
       { type: 'photo', url: `${BASE}c070b6ea-c8d9-42a0-b4f2-6282467caff0.png` },
       { type: 'photo', url: `${BASE}09acb856-dcea-4963-9e24-723838dc3aba.jpg` },
       { type: 'photo', url: `${BASE}bd4d2eea-043a-4388-bd84-5633d9843acf.jpg` },
@@ -257,15 +257,26 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
       <div className="flex-1 flex items-center justify-center relative overflow-hidden select-none">
         {current.type === 'video' ? (
           playing ? (
-            <iframe
-              key={current.vkId + '_play'}
-              src={`https://vk.com/video_ext.php?oid=${current.vkId.split('_')[0]}&id=${current.vkId.split('_')[1]}&hd=2&autoplay=1&mute=0&no_audio_desc=1`}
-              className="w-full h-full"
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-              frameBorder="0"
-              style={{ minHeight: '100%' }}
-            />
+            current.url ? (
+              <video
+                key={current.url}
+                src={current.url}
+                className="w-full h-full object-contain"
+                autoPlay
+                controls
+                playsInline
+              />
+            ) : (
+              <iframe
+                key={current.vkId + '_play'}
+                src={`https://vk.com/video_ext.php?oid=${current.vkId!.split('_')[0]}&id=${current.vkId!.split('_')[1]}&hd=2&autoplay=1&mute=0&no_audio_desc=1`}
+                className="w-full h-full"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+                frameBorder="0"
+                style={{ minHeight: '100%' }}
+              />
+            )
           ) : (
             <div
               className="w-full h-full flex flex-col items-center justify-center gap-6 cursor-pointer"
