@@ -233,8 +233,14 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
       onTouchEnd={onTouchEnd}
     >
       {/* Top bar */}
-      <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-4 pt-4 pb-2"
-        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)' }}>
+      <div
+        className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-4 pt-4 pb-2 transition-opacity duration-300"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)',
+          opacity: playing && current.type === 'video' && current.url ? 0 : 1,
+          pointerEvents: playing && current.type === 'video' && current.url ? 'none' : 'auto',
+        }}
+      >
         <button
           onClick={onClose}
           className="flex items-center gap-2 text-white font-bold text-sm bg-black/40 backdrop-blur rounded-full px-4 py-2 hover:bg-black/60 transition-colors"
@@ -258,14 +264,25 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
         {current.type === 'video' ? (
           playing ? (
             current.url ? (
-              <video
-                key={current.url}
-                src={current.url}
-                className="w-full h-full object-contain"
-                autoPlay
-                controls
-                playsInline
-              />
+              <div className="relative w-full h-full flex flex-col">
+                <video
+                  key={current.url}
+                  src={current.url}
+                  className="w-full flex-1 object-contain"
+                  autoPlay
+                  controls
+                  playsInline
+                  controlsList="nodownload"
+                  style={{ maxHeight: '100%' }}
+                />
+                <button
+                  onClick={() => setPlaying(false)}
+                  className="absolute top-4 left-4 flex items-center gap-2 text-white font-bold text-sm bg-black/50 backdrop-blur rounded-full px-4 py-2 hover:bg-black/70 transition-colors z-20"
+                >
+                  <Icon name="ChevronLeft" size={20} />
+                  Назад
+                </button>
+              </div>
             ) : (
               <iframe
                 key={current.vkId + '_play'}
@@ -324,10 +341,14 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
         )}
       </div>
 
-      {/* Bottom bar: thumbnails + order button */}
+      {/* Bottom bar: thumbnails + order button — скрываем когда играет mp4 */}
       <div
-        className="absolute bottom-0 inset-x-0 z-10 px-4 pb-5 pt-8"
-        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)' }}
+        className="absolute bottom-0 inset-x-0 z-10 px-4 pb-5 pt-8 transition-opacity duration-300"
+        style={{
+          background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)',
+          opacity: playing && current.type === 'video' && current.url ? 0 : 1,
+          pointerEvents: playing && current.type === 'video' && current.url ? 'none' : 'auto',
+        }}
       >
         {/* Thumbnails */}
         {char.media.length > 1 && (
