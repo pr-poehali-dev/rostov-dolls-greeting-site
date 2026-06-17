@@ -197,13 +197,16 @@ type ViewerProps = {
 const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps) => {
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
+  const [playing, setPlaying] = useState(false);
   const current = char.media[idx];
 
   const prev = useCallback(() => {
+    setPlaying(false);
     onSetIdx((idx - 1 + char.media.length) % char.media.length);
   }, [idx, char.media.length, onSetIdx]);
 
   const next = useCallback(() => {
+    setPlaying(false);
     onSetIdx((idx + 1) % char.media.length);
   }, [idx, char.media.length, onSetIdx]);
 
@@ -253,15 +256,34 @@ const FullscreenViewer = ({ char, idx, onClose, onOrder, onSetIdx }: ViewerProps
       {/* Main media area */}
       <div className="flex-1 flex items-center justify-center relative overflow-hidden select-none">
         {current.type === 'video' ? (
-          <iframe
-            key={current.vkId}
-            src={`https://vk.com/video_ext.php?oid=${current.vkId.split('_')[0]}&id=${current.vkId.split('_')[1]}&hd=2&autoplay=1&no_audio_desc=1`}
-            className="w-full h-full"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-            allowFullScreen
-            frameBorder="0"
-            style={{ minHeight: '100%' }}
-          />
+          playing ? (
+            <iframe
+              key={current.vkId + '_play'}
+              src={`https://vk.com/video_ext.php?oid=${current.vkId.split('_')[0]}&id=${current.vkId.split('_')[1]}&hd=2&autoplay=1&mute=0&no_audio_desc=1`}
+              className="w-full h-full"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+              allowFullScreen
+              frameBorder="0"
+              style={{ minHeight: '100%' }}
+            />
+          ) : (
+            <div
+              className="w-full h-full flex flex-col items-center justify-center gap-6 cursor-pointer"
+              style={{ background: `linear-gradient(135deg, ${char.color}44, ${char.color}22)` }}
+              onClick={() => setPlaying(true)}
+            >
+              <div className="text-8xl animate-wiggle">{char.emoji}</div>
+              <button
+                className="flex items-center gap-3 text-white font-bold text-xl px-8 py-4 rounded-full shadow-2xl transition-transform hover:scale-105 active:scale-95"
+                style={{ background: char.color }}
+                onClick={(e) => { e.stopPropagation(); setPlaying(true); }}
+              >
+                <Icon name="Play" size={28} className="ml-1" />
+                Смотреть
+              </button>
+              <p className="text-white/60 text-sm">Видео с {char.name}</p>
+            </div>
+          )
         ) : (
           <img
             key={current.url}
